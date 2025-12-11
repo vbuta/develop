@@ -22,9 +22,9 @@ jobs:
         working-directory: ./dotnet
         run: dotnet restore
 
-      - name: Publish project
+      - name: Publish project (Framework-dependent)
         working-directory: ./dotnet
-        run: dotnet publish -c Release -o published
+        run: dotnet publish -c Release -o published --no-self-contained
 
       - name: Create ZIP package
         working-directory: ./dotnet/published
