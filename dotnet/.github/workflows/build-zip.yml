@@ -1,39 +1,37 @@
-name: Build and Package Function App
+name: Build ZIP Azure Function (.NET)
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build-zip:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup .NET 8
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore ./dotnet/dotnet.csproj
+      - name: Restore dependencies
+        working-directory: ./dotnet
+        run: dotnet restore
 
-    - name: Build
-      run: dotnet build ./dotnet/dotnet.csproj --configuration Release --no-restore
+      - name: Publish project (Framework-dependent)
+        working-directory: ./dotnet
+        run: dotnet publish -c Release -o published --no-self-contained
 
-    - name: Publish (framework-dependent)
-      run: dotnet publish ./dotnet/dotnet.csproj --configuration Release --output ./publish --no-self-contained
+      - name: Create ZIP package
+        working-directory: ./dotnet/published
+        run: zip -r ../functionapp.zip .
 
-    # ⚠️ IMPORTANT : Créer un ZIP à partir du CONTENU du dossier publish, pas du dossier lui-même
-    - name: Create ZIP package
-      run: |
-        cd publish
-        zip -r ../function.zip .
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: function-package
-        path: function.zip
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: functionapp-zip
+          path: dotnet/functionapp.zip
