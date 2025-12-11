@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Runtime.InteropServices;
+using System;
 
 public class Functions
 {
@@ -77,3 +78,4 @@ public class Functions
         return response;
     }
 }
+
