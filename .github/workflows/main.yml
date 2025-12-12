@@ -28,10 +28,10 @@ jobs:
 
       - name: Create ZIP package
         working-directory: ./dotnet/published
-        run: zip -r ../functionapp.zip .
+        run: zip -r ../dotnet.zip .
 
       - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4
         with:
           name: functionapp-zip
-          path: dotnet/functionapp.zip
+          path: dotnet/dotnet.zip
